@@ -217,7 +217,7 @@ export default function Home() {
         </div>
       </main>
 
-      <footer className="h-10 border-t border-zinc-800 flex items-center justify-center px-5 bg-zinc-900 text-xs text-zinc-500">
+      <footer className="h-10 border-t border-zinc-800 flex items-center justify-between px-5 bg-zinc-900 text-xs text-zinc-500">
         <p>
           © {yearDisplay} PixelPatterns. All rights reserved. a{' '}
           <a 
@@ -230,6 +230,14 @@ export default function Home() {
           </a>{' '}
           joint.
         </p>
+        <a
+          href="https://github.com/skullzarmy/pixelpatterns"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="hover:text-zinc-400 transition-colors"
+        >
+          This project is open-source on GitHub
+        </a>
       </footer>
 
       <ExportModal
