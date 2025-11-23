@@ -10,6 +10,8 @@ import ExportModal from '@/components/export-modal';
 import PromoPopup from '@/components/promo-popup';
 import { SupportDialog } from '@/components/support-dialog';
 
+import { ThemeToggle } from '@/components/theme-toggle';
+
 const PALETTE_PRESETS = {
   'Default': ['#000000', '#ffffff', '#ef4444', '#f97316', '#f59e0b', '#84cc16', '#10b981', '#06b6d4', '#3b82f6', '#8b5cf6', '#d946ef', '#f43f5e'],
   'Grayscale': ['#000000', '#1a1a1a', '#333333', '#4d4d4d', '#666666', '#808080', '#999999', '#b3b3b3', '#cccccc', '#e6e6e6', '#f2f2f2', '#ffffff'],
@@ -166,6 +168,7 @@ export default function Home() {
           >
             <Grid className="h-4 w-4" />
           </Button>
+          <ThemeToggle />
           <div className="w-px h-6 bg-zinc-700 mx-2"></div>
           <Button onClick={() => setIsExportModalOpen(true)} className="gap-2">
             <Download className="h-4 w-4" />

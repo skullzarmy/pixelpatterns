@@ -18,7 +18,7 @@ export const metadata = {
   authors: [{ name: 'FAFO Lab', url: 'https://fafolab.xyz' }],
   creator: 'FAFO Lab',
   publisher: 'PixelPatterns',
-  metadataBase: new URL('https://pixelpatterns.app'),
+  metadataBase: new URL('https://pixel.fafolab.xyz'),
   appleWebApp: {
     title: 'PixelPatterns',
   },
@@ -28,7 +28,7 @@ export const metadata = {
   openGraph: {
     title: 'PixelPatterns - Create Seamless Pixel Art Patterns',
     description: 'Free online pixel art editor for creating seamless tiling patterns. Design, preview, and export pixel art tiles with ease.',
-    url: 'https://pixelpatterns.app',
+    url: 'https://pixel.fafolab.xyz',
     siteName: 'PixelPatterns',
     locale: 'en_US',
     type: 'website',
@@ -66,6 +66,8 @@ export const metadata = {
   },
 };
 
+import { ThemeProvider } from "@/components/theme-provider"
+
 export const viewport = {
   width: 'device-width',
   initialScale: 1,
@@ -74,7 +76,7 @@ export const viewport = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className="dark" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning>
       <head>
         <link rel="manifest" href="/manifest.json" />
         <meta name="theme-color" content="#8b5cf6" />
@@ -86,7 +88,7 @@ export default function RootLayout({ children }) {
               '@type': 'WebApplication',
               name: 'PixelPatterns',
               description: 'Free online pixel art editor for creating seamless tiling patterns',
-              url: 'https://pixelpatterns.app',
+              url: 'https://pixel.fafolab.xyz',
               applicationCategory: 'DesignApplication',
               operatingSystem: 'Any',
               offers: {
@@ -102,7 +104,14 @@ export default function RootLayout({ children }) {
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         suppressHydrationWarning
       >
-        {children}
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   );

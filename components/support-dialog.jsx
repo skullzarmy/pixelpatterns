@@ -21,13 +21,13 @@ export function SupportDialog({ isOpen, onClose }) {
     const formLink = "https://tezoscommons.typeform.com/to/cBeP4RnI?typeform-source=pixelpatterns";
     const socialLink = "https://x.com/fafo_lab";
     const tweetText = encodeURIComponent(
-        "I just used PixelPatterns (https://pixelpatterns.app) by @fafo_lab and loved it! #tezosCRP"
+        "I just used PixelPatterns (https://pixel.fafolab.xyz) by @fafo_lab and loved it! #tezosCRP"
     );
     const tweetLink = `https://x.com/intent/tweet?text=${tweetText}`;
 
     const handleCopyLink = async () => {
         try {
-            await navigator.clipboard.writeText("https://pixelpatterns.app");
+            await navigator.clipboard.writeText("https://pixel.fafolab.xyz");
             setCopied(true);
             setTimeout(() => setCopied(false), 2000);
         } catch (err) {
