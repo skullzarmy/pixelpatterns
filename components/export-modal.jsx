@@ -13,7 +13,7 @@ import { Button } from '@/components/ui/button';
 import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
 
-export default function ExportModal({ isOpen, onClose, imageData }) {
+export default function ExportModal({ isOpen, onClose, imageData, onExportComplete }) {
   const [exportType, setExportType] = useState('tile');
   const [scale, setScale] = useState('10');
   const [isProcessing, setIsProcessing] = useState(false);
@@ -70,6 +70,7 @@ export default function ExportModal({ isOpen, onClose, imageData }) {
       saveAs(content, `pixelpatterns_${exportType}_all.zip`);
       setIsProcessing(false);
       onClose();
+      if (onExportComplete) onExportComplete();
     } else if (scale === 'full-pack') {
       setIsProcessing(true);
       const zip = new JSZip();
@@ -88,11 +89,13 @@ export default function ExportModal({ isOpen, onClose, imageData }) {
       saveAs(content, 'pixelpatterns_full_pack.zip');
       setIsProcessing(false);
       onClose();
+      if (onExportComplete) onExportComplete();
     } else {
       const canvas = await generateCanvas(exportType, parseInt(scale));
       canvas.toBlob((blob) => {
         saveAs(blob, `pixelpatterns_${exportType}_${scale}x.png`);
         onClose();
+        if (onExportComplete) onExportComplete();
       }, 'image/png');
     }
   };

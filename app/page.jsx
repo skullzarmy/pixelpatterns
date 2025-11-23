@@ -7,6 +7,8 @@ import Toolbar from '@/components/toolbar';
 import PixelEditor from '@/components/pixel-editor';
 import Preview from '@/components/preview';
 import ExportModal from '@/components/export-modal';
+import PromoPopup from '@/components/promo-popup';
+import { SupportDialog } from '@/components/support-dialog';
 
 const PALETTE_PRESETS = {
   'Default': ['#000000', '#ffffff', '#ef4444', '#f97316', '#f59e0b', '#84cc16', '#10b981', '#06b6d4', '#3b82f6', '#8b5cf6', '#d946ef', '#f43f5e'],
@@ -46,6 +48,7 @@ export default function Home() {
 
   const [imageData, setImageData] = useState(null);
   const [isExportModalOpen, setIsExportModalOpen] = useState(false);
+  const [isSupportDialogOpen, setIsSupportDialogOpen] = useState(false);
 
   const pixelEditorRef = useRef(null);
 
@@ -230,7 +233,15 @@ export default function Home() {
         isOpen={isExportModalOpen}
         onClose={() => setIsExportModalOpen(false)}
         imageData={imageData}
+        onExportComplete={() => setIsSupportDialogOpen(true)}
       />
+
+      <SupportDialog 
+        isOpen={isSupportDialogOpen} 
+        onClose={() => setIsSupportDialogOpen(false)} 
+      />
+
+      <PromoPopup />
     </div>
   );
 }
