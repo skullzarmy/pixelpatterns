@@ -145,8 +145,8 @@ export default function Home() {
   const yearDisplay = currentYear > 2025 ? `2025-${currentYear}` : '2025';
 
   return (
-    <div className="flex flex-col h-screen bg-zinc-950 text-zinc-50">
-      <header className="h-16 border-b border-zinc-800 flex items-center justify-between px-5 bg-zinc-900">
+    <div className="flex flex-col h-screen bg-background text-foreground">
+      <header className="h-16 border-b border-border flex items-center justify-between px-5 bg-card">
         <div className="flex items-center gap-3">
           <img src="/icon0.svg" alt="PixelPatterns" className="w-6 h-6" />
           <h1 className="text-lg font-semibold tracking-tight">PixelPatterns</h1>
@@ -169,7 +169,7 @@ export default function Home() {
             <Grid className="h-4 w-4" />
           </Button>
           <ThemeToggle />
-          <div className="w-px h-6 bg-zinc-700 mx-2"></div>
+          <div className="w-px h-6 bg-border mx-2"></div>
           <Button onClick={() => setIsExportModalOpen(true)} className="gap-2">
             <Download className="h-4 w-4" />
             <span>Export</span>
@@ -201,7 +201,7 @@ export default function Home() {
           onExportPalette={handleExportPalette}
         />
 
-        <div className="flex-1 bg-zinc-950 flex items-center justify-center border-r border-zinc-800">
+        <div className="flex-1 bg-background flex items-center justify-center border-r border-border">
           <PixelEditor
             ref={pixelEditorRef}
             size={size}
@@ -212,19 +212,19 @@ export default function Home() {
           />
         </div>
 
-        <div className="flex-1 bg-zinc-900 flex items-center justify-center">
+        <div className="flex-1 bg-muted/30 flex items-center justify-center">
           <Preview imageData={imageData} mode={viewMode} />
         </div>
       </main>
 
-      <footer className="h-10 border-t border-zinc-800 flex items-center justify-between px-5 bg-zinc-900 text-xs text-zinc-500">
+      <footer className="h-10 border-t border-border flex items-center justify-between px-5 bg-card text-xs text-muted-foreground">
         <p>
           © {yearDisplay} PixelPatterns. All rights reserved. a{' '}
           <a 
             href="https://fafolab.xyz" 
             target="_blank" 
             rel="noopener noreferrer"
-            className="hover:text-zinc-400 transition-colors"
+            className="hover:text-foreground transition-colors"
           >
             FAFO <span className="line-through">lab</span>
           </a>{' '}
@@ -234,7 +234,7 @@ export default function Home() {
           href="https://github.com/skullzarmy/pixelpatterns"
           target="_blank"
           rel="noopener noreferrer"
-          className="hover:text-zinc-400 transition-colors"
+          className="hover:text-foreground transition-colors"
         >
           This project is open-source on GitHub
         </a>

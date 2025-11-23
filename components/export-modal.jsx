@@ -124,23 +124,23 @@ export default function ExportModal({ isOpen, onClose, imageData, onExportComple
                 onClick={() => setExportType('tile')}
                 className={`px-4 py-3 rounded-lg border-2 transition-all ${
                   exportType === 'tile'
-                    ? 'border-violet-500 bg-violet-500/10 text-violet-400'
-                    : 'border-zinc-700 hover:border-zinc-600'
+                    ? 'border-primary bg-primary/10 text-primary'
+                    : 'border-border hover:border-foreground/20'
                 }`}
               >
                 <div className="font-medium">Single Tile</div>
-                <div className="text-xs text-zinc-500">One image</div>
+                <div className="text-xs text-muted-foreground">One image</div>
               </button>
               <button
                 onClick={() => setExportType('pattern')}
                 className={`px-4 py-3 rounded-lg border-2 transition-all ${
                   exportType === 'pattern'
-                    ? 'border-violet-500 bg-violet-500/10 text-violet-400'
-                    : 'border-zinc-700 hover:border-zinc-600'
+                    ? 'border-primary bg-primary/10 text-primary'
+                    : 'border-border hover:border-foreground/20'
                 }`}
               >
                 <div className="font-medium">Pattern</div>
-                <div className="text-xs text-zinc-500">2x2 tiled</div>
+                <div className="text-xs text-muted-foreground">2x2 tiled</div>
               </button>
             </div>
           </div>
@@ -152,8 +152,8 @@ export default function ExportModal({ isOpen, onClose, imageData, onExportComple
                 onClick={() => setScale('1')}
                 className={`px-3 py-2 rounded-lg border-2 transition-all ${
                   scale === '1'
-                    ? 'border-violet-500 bg-violet-500/10 text-violet-400'
-                    : 'border-zinc-700 hover:border-zinc-600'
+                    ? 'border-primary bg-primary/10 text-primary'
+                    : 'border-border hover:border-foreground/20'
                 }`}
               >
                 1x
@@ -162,8 +162,8 @@ export default function ExportModal({ isOpen, onClose, imageData, onExportComple
                 onClick={() => setScale('10')}
                 className={`px-3 py-2 rounded-lg border-2 transition-all ${
                   scale === '10'
-                    ? 'border-violet-500 bg-violet-500/10 text-violet-400'
-                    : 'border-zinc-700 hover:border-zinc-600'
+                    ? 'border-primary bg-primary/10 text-primary'
+                    : 'border-border hover:border-foreground/20'
                 }`}
               >
                 10x
@@ -172,8 +172,8 @@ export default function ExportModal({ isOpen, onClose, imageData, onExportComple
                 onClick={() => setScale('20')}
                 className={`px-3 py-2 rounded-lg border-2 transition-all ${
                   scale === '20'
-                    ? 'border-violet-500 bg-violet-500/10 text-violet-400'
-                    : 'border-zinc-700 hover:border-zinc-600'
+                    ? 'border-primary bg-primary/10 text-primary'
+                    : 'border-border hover:border-foreground/20'
                 }`}
               >
                 20x
@@ -185,24 +185,24 @@ export default function ExportModal({ isOpen, onClose, imageData, onExportComple
                 onClick={() => setScale('all')}
                 className={`w-full px-4 py-3 rounded-lg border-2 transition-all text-left ${
                   scale === 'all'
-                    ? 'border-violet-500 bg-violet-500/10 text-violet-400'
-                    : 'border-zinc-700 hover:border-zinc-600'
+                    ? 'border-primary bg-primary/10 text-primary'
+                    : 'border-border hover:border-foreground/20'
                 }`}
               >
                 <div className="font-medium">All Sizes (ZIP)</div>
-                <div className="text-xs text-zinc-500">1x, 10x, 20x of current type</div>
+                <div className="text-xs text-muted-foreground">1x, 10x, 20x of current type</div>
               </button>
               
               <button
                 onClick={() => setScale('full-pack')}
                 className={`w-full px-4 py-3 rounded-lg border-2 transition-all text-left ${
                   scale === 'full-pack'
-                    ? 'border-violet-500 bg-violet-500/10 text-violet-400'
-                    : 'border-zinc-700 hover:border-zinc-600'
+                    ? 'border-primary bg-primary/10 text-primary'
+                    : 'border-border hover:border-foreground/20'
                 }`}
               >
                 <div className="font-medium">Full Pack (ZIP)</div>
-                <div className="text-xs text-zinc-500">Tile + Pattern at all sizes</div>
+                <div className="text-xs text-muted-foreground">Tile + Pattern at all sizes</div>
               </button>
             </div>
           </div>

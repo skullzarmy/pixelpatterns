@@ -63,11 +63,11 @@ export default function PromoPopup() {
         </DialogHeader>
 
         <div className="flex flex-col gap-3 pt-4">
-          <div className="rounded-lg border border-zinc-800 bg-zinc-900/50 p-4">
-            <p className="text-sm text-zinc-400 mb-3">
+          <div className="rounded-lg border border-border bg-muted/50 p-4">
+            <p className="text-sm text-muted-foreground mb-3">
               Perfect companion to PixelPatterns for creating authentic retro artwork.
             </p>
-            <ul className="text-xs text-zinc-500 space-y-1">
+            <ul className="text-xs text-muted-foreground space-y-1">
               <li>• Classic dithering algorithms</li>
               <li>• Multiple pattern styles</li>
               <li>• Easy-to-use interface</li>
@@ -84,13 +84,13 @@ export default function PromoPopup() {
           </div>
         </div>
 
-        <p className="text-xs text-center text-zinc-600 mt-2">
+        <p className="text-xs text-center text-muted-foreground mt-2">
           Another tool from{' '}
           <a 
             href="https://fafolab.xyz" 
             target="_blank" 
             rel="noopener noreferrer"
-            className="hover:text-zinc-400 transition-colors"
+            className="hover:text-foreground transition-colors"
           >
             FAFO <span className="line-through">lab</span>
           </a>

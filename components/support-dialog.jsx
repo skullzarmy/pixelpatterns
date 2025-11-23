@@ -53,24 +53,24 @@ export function SupportDialog({ isOpen, onClose }) {
                     isOpen ? "opacity-100 scale-100" : "opacity-0 scale-95 pointer-events-none"
                 }`}
             >
-                <div className="bg-zinc-950 border-2 border-zinc-800 rounded-lg shadow-2xl p-6 mx-4 text-zinc-50">
+                <div className="bg-background border-2 border-border rounded-lg shadow-2xl p-6 mx-4 text-foreground">
                     {/* Header */}
                     <div className="flex items-start justify-between mb-4">
                         <div className="flex items-center gap-3">
-                            <div className="w-12 h-12 bg-violet-500/10 rounded-full flex items-center justify-center">
-                                <Heart className="w-6 h-6 text-violet-500" fill="currentColor" />
+                            <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
+                                <Heart className="w-6 h-6 text-primary" fill="currentColor" />
                             </div>
                             <div>
                                 <h2 className="text-2xl font-bold">
                                     {"Your file is ready!"}
                                 </h2>
-                                <p className="text-sm text-zinc-400">{"Download should start automatically"}</p>
+                                <p className="text-sm text-muted-foreground">{"Download should start automatically"}</p>
                             </div>
                         </div>
                         <button
                             type="button"
                             onClick={onClose}
-                            className="text-zinc-400 hover:text-zinc-50 transition-colors p-1"
+                            className="text-muted-foreground hover:text-foreground transition-colors p-1"
                             aria-label="Close"
                         >
                             <X className="w-5 h-5" />
@@ -81,12 +81,12 @@ export function SupportDialog({ isOpen, onClose }) {
                     <div className="space-y-4 mb-6">
                         <p>
                             {"Enjoyed using "}
-                            <span className="font-semibold text-violet-400">{"PixelPatterns"}</span>
+                            <span className="font-semibold text-primary">{"PixelPatterns"}</span>
                             {" and other free tools from FAFO"}
                             <span className="line-through">{"lab"}</span>
                             {"?"}
                         </p>
-                        <p className="text-sm text-zinc-400">
+                        <p className="text-sm text-muted-foreground">
                             {"Support "}
                             <span className="font-medium">
                                 {"FAFO"}
@@ -100,39 +100,39 @@ export function SupportDialog({ isOpen, onClose }) {
                     <div className="space-y-3">
                         <Button
                             onClick={() => window.open(nftLink, "_blank")}
-                            className="w-full justify-start h-auto py-3 bg-zinc-900 border-zinc-800 hover:bg-zinc-800 text-zinc-50"
+                            className="w-full justify-start h-auto py-3 bg-card border-border hover:bg-accent text-foreground"
                             variant="outline"
                         >
                             <div className="flex items-start gap-3 text-left w-full min-w-0">
-                                <div className="w-10 h-10 bg-violet-500/10 rounded-lg flex items-center justify-center shrink-0 mt-0.5">
-                                    <Heart className="w-5 h-5 text-violet-500" />
+                                <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center shrink-0 mt-0.5">
+                                    <Heart className="w-5 h-5 text-primary" />
                                 </div>
                                 <div className="flex-1 min-w-0">
                                     <div className="font-semibold mb-1">
                                         {"Collect Our 3D Button Pins"}
                                     </div>
-                                    <div className="text-xs text-zinc-400 whitespace-normal wrap-break-word">
+                                    <div className="text-xs text-muted-foreground whitespace-normal wrap-break-word">
                                         {"White & Platinum editions • Future benefits for holders 😉"}
                                     </div>
                                 </div>
-                                <ExternalLink className="w-4 h-4 text-zinc-500 shrink-0 mt-1" />
+                                <ExternalLink className="w-4 h-4 text-muted-foreground shrink-0 mt-1" />
                             </div>
                         </Button>
 
                         <Button
                             onClick={() => window.open(formLink, "_blank")}
-                            className="w-full justify-start h-auto py-3 bg-zinc-900 border-zinc-800 hover:bg-zinc-800 text-zinc-50"
+                            className="w-full justify-start h-auto py-3 bg-card border-border hover:bg-accent text-foreground"
                             variant="outline"
                         >
                             <div className="flex items-start gap-3 text-left w-full">
-                                <div className="w-10 h-10 bg-violet-500/10 rounded-lg flex items-center justify-center shrink-0 mt-0.5">
-                                    <Trophy className="w-5 h-5 text-violet-500" />
+                                <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center shrink-0 mt-0.5">
+                                    <Trophy className="w-5 h-5 text-primary" />
                                 </div>
                                 <div className="flex-1 min-w-0">
                                     <div className="font-semibold mb-1">
                                         {"Nominate Us for CRP Award"}
                                     </div>
-                                    <div className="text-xs text-zinc-400 mb-2 whitespace-normal wrap-break-word">
+                                    <div className="text-xs text-muted-foreground mb-2 whitespace-normal wrap-break-word">
                                         {"Submit us for Tezos Community Rewards Program"}
                                     </div>
                                     <div className="flex items-center gap-2 mt-2">
@@ -150,7 +150,7 @@ export function SupportDialog({ isOpen, onClose }) {
                                                     handleCopyLink();
                                                 }
                                             }}
-                                            className="flex items-center gap-1.5 px-2 py-1 text-xs bg-violet-500/10 hover:bg-violet-500/20 rounded text-zinc-50 transition-colors cursor-pointer"
+                                            className="flex items-center gap-1.5 px-2 py-1 text-xs bg-primary/10 hover:bg-primary/20 rounded text-foreground transition-colors cursor-pointer"
                                         >
                                             {copied ? (
                                                 <>
@@ -164,38 +164,38 @@ export function SupportDialog({ isOpen, onClose }) {
                                                 </>
                                             )}
                                         </span>
-                                        <span className="text-xs text-zinc-500 font-mono truncate">
+                                        <span className="text-xs text-muted-foreground font-mono truncate">
                                             {socialLink}
                                         </span>
                                     </div>
                                 </div>
-                                <ExternalLink className="w-4 h-4 text-zinc-500 shrink-0 mt-1" />
+                                <ExternalLink className="w-4 h-4 text-muted-foreground shrink-0 mt-1" />
                             </div>
                         </Button>
 
                         <Button
                             onClick={() => window.open(tweetLink, "_blank")}
-                            className="w-full justify-start h-auto py-3 bg-zinc-900 border-zinc-800 hover:bg-zinc-800 text-zinc-50"
+                            className="w-full justify-start h-auto py-3 bg-card border-border hover:bg-accent text-foreground"
                             variant="outline"
                         >
                             <div className="flex items-start gap-3 text-left w-full min-w-0">
-                                <div className="w-10 h-10 bg-violet-500/10 rounded-lg flex items-center justify-center shrink-0 mt-0.5">
-                                    <Twitter className="w-5 h-5 text-violet-500" />
+                                <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center shrink-0 mt-0.5">
+                                    <Twitter className="w-5 h-5 text-primary" />
                                 </div>
                                 <div className="flex-1 min-w-0">
                                     <div className="font-semibold mb-1">{"Share on X (Twitter)"}</div>
-                                    <div className="text-xs text-zinc-400 whitespace-normal wrap-break-word">
+                                    <div className="text-xs text-muted-foreground whitespace-normal wrap-break-word">
                                         {"Tweet about your experience with PixelPatterns"}
                                     </div>
                                 </div>
-                                <ExternalLink className="w-4 h-4 text-zinc-500 shrink-0 mt-1" />
+                                <ExternalLink className="w-4 h-4 text-muted-foreground shrink-0 mt-1" />
                             </div>
                         </Button>
                     </div>
 
                     {/* Footer */}
-                    <div className="mt-6 pt-4 border-t border-zinc-800">
-                        <Button onClick={onClose} variant="ghost" className="w-full text-zinc-400 hover:text-zinc-50 hover:bg-zinc-800">
+                    <div className="mt-6 pt-4 border-t border-border">
+                        <Button onClick={onClose} variant="ghost" className="w-full text-muted-foreground hover:text-foreground hover:bg-accent">
                             {"Maybe Later"}
                         </Button>
                     </div>

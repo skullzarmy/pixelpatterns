@@ -49,9 +49,9 @@ export default function Toolbar({
   };
 
   return (
-    <aside className="w-64 bg-zinc-950 border-r border-zinc-800 flex flex-col gap-6 p-5 overflow-y-auto">
+    <aside className="w-64 bg-card border-r border-border flex flex-col gap-6 p-5 overflow-y-auto">
       <div>
-        <h3 className="text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-3">Tools</h3>
+        <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">Tools</h3>
         <div className="grid grid-cols-4 gap-2">
           <Button
             variant={tool === 'pen' ? 'default' : 'outline'}
@@ -84,7 +84,7 @@ export default function Toolbar({
       </div>
 
       <div>
-        <h3 className="text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-3">History</h3>
+        <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">History</h3>
         <div className="flex gap-2">
           <Button variant="outline" size="icon" onClick={onUndo} title="Undo (Cmd+Z)" className="flex-1">
             <Undo className="h-4 w-4" />
@@ -96,7 +96,7 @@ export default function Toolbar({
       </div>
 
       <div>
-        <h3 className="text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-3">Brush Size</h3>
+        <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">Brush Size</h3>
         <div className="flex gap-2">
           {[1, 2, 3].map(s => (
             <Button
@@ -113,7 +113,7 @@ export default function Toolbar({
       </div>
 
       <div>
-        <h3 className="text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-3">Palette</h3>
+        <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">Palette</h3>
         
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -215,7 +215,7 @@ export default function Toolbar({
           {palette.map((c, i) => (
             <button
               key={i}
-              className={`aspect-square rounded border-2 ${color === c ? 'border-white' : 'border-transparent'} transition-all hover:scale-110`}
+              className={`aspect-square rounded border-2 ${color === c ? 'border-foreground' : 'border-transparent'} transition-all hover:scale-110`}
               style={{ backgroundColor: c }}
               onClick={() => setColor(c)}
               onContextMenu={(e) => handleRemoveColor(e, c)}
@@ -226,7 +226,7 @@ export default function Toolbar({
       </div>
 
       <div>
-        <h3 className="text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-3">Grid Size</h3>
+        <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">Grid Size</h3>
         <div className="flex gap-2">
           {[8, 16, 32].map((s) => (
             <Button
