@@ -1,246 +1,401 @@
-'use client';
+"use client";
 
-import React, { useState, useRef } from 'react';
-import { Pen, Eraser, PaintBucket, Undo, Redo, Plus, Trash2, Save, Upload, Download, Check } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { useState, useRef } from "react";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { Input } from '@/components/ui/input';
+    Pen,
+    Eraser,
+    PaintBucket,
+    Plus,
+    Save,
+    Upload,
+    Download,
+    Palette as PaletteIcon,
+    ChevronUp,
+    ChevronDown,
+    Trash2,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Input } from "@/components/ui/input";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import SavePalettePopover from "@/components/save-palette-dialog";
 
 export default function Toolbar({
-  tool, setTool,
-  color, setColor,
-  size, setSize,
-  brushSize, setBrushSize,
-  palette, setPalette,
-  onUndo, onRedo,
-  presets, savedPalettes, currentPaletteName,
-  onLoadPalette, onSavePalette, onDeletePalette,
-  onImportPalette, onExportPalette
+    tool,
+    setTool,
+    color,
+    setColor,
+    size,
+    setSize,
+    brushSize,
+    setBrushSize,
+    palette,
+    setPalette,
+    currentPaletteName,
+    presets,
+    savedPalettes,
+    onLoadPalette,
+    onSavePalette,
+    onImportPalette,
+    onExportPalette,
 }) {
-  const [isSaveMode, setIsSaveMode] = useState(false);
-  const [newPaletteName, setNewPaletteName] = useState('');
-  const fileInputRef = useRef(null);
+    const [customSize, setCustomSize] = useState(size);
+    const [clearPaletteOpen, setClearPaletteOpen] = useState(false);
+    const [removeColorOpen, setRemoveColorOpen] = useState(false);
+    const fileInputRef = useRef(null);
 
-  const handleAddColor = () => {
-    if (!palette.includes(color)) {
-      setPalette([...palette, color]);
-    }
-  };
+    const handleAddColor = () => {
+        if (!palette.includes(color)) {
+            setPalette([...palette, color]);
+        }
+    };
 
-  const handleRemoveColor = (e, colorToRemove) => {
-    e.preventDefault();
-    setPalette(palette.filter(c => c !== colorToRemove));
-  };
+    const handleClearPalette = () => {
+        setPalette(["#000000"]);
+        setColor("#000000");
+        setClearPaletteOpen(false);
+    };
 
-  const handleSaveSubmit = (e) => {
-    e.preventDefault();
-    if (newPaletteName.trim()) {
-      onSavePalette(newPaletteName.trim());
-      setNewPaletteName('');
-      setIsSaveMode(false);
-    }
-  };
+    const handleRemoveSelectedColor = () => {
+        const newPalette = palette.filter((c) => c !== color);
+        setPalette(newPalette);
+        setColor(newPalette[0]);
+        setRemoveColorOpen(false);
+    };
 
-  return (
-    <aside className="w-64 bg-card border-r border-border flex flex-col gap-6 p-5 overflow-y-auto">
-      <div>
-        <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">Tools</h3>
-        <div className="grid grid-cols-4 gap-2">
-          <Button
-            variant={tool === 'pen' ? 'default' : 'outline'}
-            size="icon"
-            onClick={() => setTool('pen')}
-            title="Pen (P)"
-            className="h-10 w-full"
-          >
-            <Pen className="h-5 w-5" />
-          </Button>
-          <Button
-            variant={tool === 'eraser' ? 'default' : 'outline'}
-            size="icon"
-            onClick={() => setTool('eraser')}
-            title="Eraser (E)"
-            className="h-10 w-full"
-          >
-            <Eraser className="h-5 w-5" />
-          </Button>
-          <Button
-            variant={tool === 'fill' ? 'default' : 'outline'}
-            size="icon"
-            onClick={() => setTool('fill')}
-            title="Bucket Fill (F)"
-            className="h-10 w-full"
-          >
-            <PaintBucket className="h-5 w-5" />
-          </Button>
-        </div>
-      </div>
+    const handleCustomSizeChange = (newSize) => {
+        const clamped = Math.max(4, Math.min(64, newSize));
+        setCustomSize(clamped);
+        setSize(clamped);
+    };
 
-      <div>
-        <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">History</h3>
-        <div className="flex gap-2">
-          <Button variant="outline" size="icon" onClick={onUndo} title="Undo (Cmd+Z)" className="flex-1">
-            <Undo className="h-4 w-4" />
-          </Button>
-          <Button variant="outline" size="icon" onClick={onRedo} title="Redo (Cmd+Shift+Z)" className="flex-1">
-            <Redo className="h-4 w-4" />
-          </Button>
-        </div>
-      </div>
+    const handleSizeIncrement = () => {
+        handleCustomSizeChange(customSize + 1);
+    };
 
-      <div>
-        <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">Brush Size</h3>
-        <div className="flex gap-2">
-          {[1, 2, 3].map(s => (
-            <Button
-              key={s}
-              variant={brushSize === s ? 'default' : 'outline'}
-              size="sm"
-              onClick={() => setBrushSize(s)}
-              className="flex-1"
-            >
-              {s}x
-            </Button>
-          ))}
-        </div>
-      </div>
+    const handleSizeDecrement = () => {
+        handleCustomSizeChange(customSize - 1);
+    };
 
-      <div>
-        <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">Palette</h3>
-        
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="w-full justify-start mb-2">
-              <span className="truncate">{currentPaletteName}</span>
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent className="w-56">
-            <DropdownMenuLabel>Presets</DropdownMenuLabel>
-            {presets.map(name => (
-              <DropdownMenuItem
-                key={name}
-                onClick={() => onLoadPalette(name)}
-                className={currentPaletteName === name ? 'bg-accent' : ''}
-              >
-                {name}
-              </DropdownMenuItem>
-            ))}
-            {savedPalettes.length > 0 && (
-              <>
-                <DropdownMenuSeparator />
-                <DropdownMenuLabel>Saved</DropdownMenuLabel>
-                {savedPalettes.map(name => (
-                  <DropdownMenuItem
-                    key={name}
-                    onClick={() => onLoadPalette(name)}
-                    className={`justify-between ${currentPaletteName === name ? 'bg-accent' : ''}`}
-                  >
-                    <span>{name}</span>
+    return (
+        <aside
+            aria-label="Drawing tools and options"
+            className="w-72 bg-card border-r border-border flex flex-col gap-5 p-6 overflow-y-auto"
+        >
+            {/* Tools */}
+            <section>
+                <h2 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">Tools</h2>
+                <div className="grid grid-cols-3 gap-2">
                     <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-4 w-4 p-0"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        onDeletePalette(name);
-                      }}
+                        variant={tool === "pen" ? "default" : "outline"}
+                        size="icon"
+                        onClick={() => setTool("pen")}
+                        aria-label="Pen tool (Keyboard shortcut: P)"
+                        aria-pressed={tool === "pen"}
+                        className="h-12 w-full"
                     >
-                      <Trash2 className="h-3 w-3" />
+                        <Pen className="h-5 w-5" aria-hidden="true" />
                     </Button>
-                  </DropdownMenuItem>
-                ))}
-              </>
-            )}
-          </DropdownMenuContent>
-        </DropdownMenu>
+                    <Button
+                        variant={tool === "eraser" ? "default" : "outline"}
+                        size="icon"
+                        onClick={() => setTool("eraser")}
+                        aria-label="Eraser tool (Keyboard shortcut: E)"
+                        aria-pressed={tool === "eraser"}
+                        className="h-12 w-full"
+                    >
+                        <Eraser className="h-5 w-5" aria-hidden="true" />
+                    </Button>
+                    <Button
+                        variant={tool === "fill" ? "default" : "outline"}
+                        size="icon"
+                        onClick={() => setTool("fill")}
+                        aria-label="Bucket fill tool (Keyboard shortcut: F)"
+                        aria-pressed={tool === "fill"}
+                        className="h-12 w-full"
+                    >
+                        <PaintBucket className="h-5 w-5" aria-hidden="true" />
+                    </Button>
+                </div>
+            </section>
 
-        <div className="flex gap-1 mb-3">
-          <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => setIsSaveMode(!isSaveMode)} title="Save Palette">
-            <Save className="h-3 w-3" />
-          </Button>
-          <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => fileInputRef.current?.click()} title="Import Palette">
-            <Upload className="h-3 w-3" />
-          </Button>
-          <Button variant="outline" size="icon" className="h-8 w-8" onClick={onExportPalette} title="Export Palette">
-            <Download className="h-3 w-3" />
-          </Button>
-          <input
-            type="file"
-            ref={fileInputRef}
-            className="hidden"
-            accept=".json"
-            onChange={(e) => {
-              if (e.target.files?.[0]) onImportPalette(e.target.files[0]);
-              e.target.value = null;
-            }}
-          />
-        </div>
+            {/* Brush Size */}
+            <section>
+                <h2 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">
+                    Brush Size
+                </h2>
+                <div className="flex gap-2">
+                    {[1, 2, 3, 4].map((s) => (
+                        <Button
+                            key={s}
+                            variant={brushSize === s ? "default" : "outline"}
+                            size="sm"
+                            onClick={() => setBrushSize(s)}
+                            aria-label={`${s} pixel brush`}
+                            aria-pressed={brushSize === s}
+                            className="flex-1"
+                        >
+                            {s}px
+                        </Button>
+                    ))}
+                </div>
+            </section>
 
-        {isSaveMode && (
-          <form onSubmit={handleSaveSubmit} className="flex gap-2 mb-3">
-            <Input
-              type="text"
-              placeholder="Palette Name"
-              value={newPaletteName}
-              onChange={(e) => setNewPaletteName(e.target.value)}
-              autoFocus
-              className="flex-1 h-8"
-            />
-            <Button type="submit" size="icon" className="h-8 w-8">
-              <Check className="h-3 w-3" />
-            </Button>
-          </form>
-        )}
+            {/* Grid Size */}
+            <section>
+                <h2 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">
+                    Canvas Size
+                </h2>
+                <div className="flex gap-2 mb-2">
+                    {[8, 16, 32].map((s) => (
+                        <Button
+                            key={s}
+                            variant={size === s ? "default" : "outline"}
+                            size="sm"
+                            onClick={() => {
+                                setSize(s);
+                                setCustomSize(s);
+                            }}
+                            className="flex-1"
+                        >
+                            {s}×{s}
+                        </Button>
+                    ))}
+                </div>
+                <div className="flex gap-1">
+                    <Input
+                        type="number"
+                        min="4"
+                        max="64"
+                        value={customSize}
+                        onChange={(e) => handleCustomSizeChange(parseInt(e.target.value) || 4)}
+                        aria-label="Custom canvas size (4-64 pixels)"
+                        className="flex-1 h-9 text-center"
+                    />
+                    <div className="flex flex-col gap-0">
+                        <Button
+                            variant="outline"
+                            size="icon"
+                            onClick={handleSizeIncrement}
+                            aria-label="Increase canvas size"
+                            className="h-[18px] w-8 rounded-b-none p-0"
+                            disabled={customSize >= 64}
+                        >
+                            <ChevronUp className="h-3 w-3" aria-hidden="true" />
+                        </Button>
+                        <Button
+                            variant="outline"
+                            size="icon"
+                            onClick={handleSizeDecrement}
+                            aria-label="Decrease canvas size"
+                            className="h-[18px] w-8 rounded-t-none p-0 border-t-0"
+                            disabled={customSize <= 4}
+                        >
+                            <ChevronDown className="h-3 w-3" aria-hidden="true" />
+                        </Button>
+                    </div>
+                </div>
+            </section>
 
-        <div className="flex gap-2 mb-3">
-          <input
-            type="color"
-            value={color}
-            onChange={(e) => setColor(e.target.value)}
-            className="flex-1 h-8 rounded cursor-pointer bg-transparent"
-          />
-          <Button variant="outline" size="icon" className="h-8 w-8" onClick={handleAddColor} title="Add current color">
-            <Plus className="h-4 w-4" />
-          </Button>
-        </div>
+            <hr className="border-t border-border" />
 
-        <div className="grid grid-cols-6 gap-1">
-          {palette.map((c, i) => (
-            <button
-              key={i}
-              className={`aspect-square rounded border-2 ${color === c ? 'border-foreground' : 'border-transparent'} transition-all hover:scale-110`}
-              style={{ backgroundColor: c }}
-              onClick={() => setColor(c)}
-              onContextMenu={(e) => handleRemoveColor(e, c)}
-              title={c}
-            />
-          ))}
-        </div>
-      </div>
+            {/* Color Palette */}
+            <section>
+                <div className="flex items-center justify-between mb-3">
+                    <h2 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                        Color Palette
+                    </h2>
+                    <div className="flex gap-1">
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={handleAddColor}
+                            aria-label="Add current color to palette"
+                            className="h-6 w-6"
+                        >
+                            <Plus className="h-4 w-4" aria-hidden="true" />
+                        </Button>
+                        <Popover open={removeColorOpen} onOpenChange={setRemoveColorOpen}>
+                            <PopoverTrigger asChild>
+                                <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    aria-label="Remove selected color from palette"
+                                    disabled={palette.length === 1}
+                                    className="h-6 w-6"
+                                >
+                                    <Trash2 className="h-4 w-4" aria-hidden="true" />
+                                </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-80" side="bottom" align="end">
+                                <div className="grid gap-4">
+                                    <div className="space-y-2">
+                                        <h4 className="font-medium leading-none">Remove Color?</h4>
+                                        <p className="text-sm text-muted-foreground">
+                                            Remove <span className="font-mono font-semibold">{color}</span> from the
+                                            palette?
+                                        </p>
+                                    </div>
+                                    <div className="flex gap-2 justify-end">
+                                        <Button variant="outline" size="sm" onClick={() => setRemoveColorOpen(false)}>
+                                            Cancel
+                                        </Button>
+                                        <Button size="sm" onClick={handleRemoveSelectedColor}>
+                                            Remove
+                                        </Button>
+                                    </div>
+                                </div>
+                            </PopoverContent>
+                        </Popover>
+                    </div>
+                </div>
 
-      <div>
-        <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">Grid Size</h3>
-        <div className="flex gap-2">
-          {[8, 16, 32].map((s) => (
-            <Button
-              key={s}
-              variant={size === s ? 'default' : 'outline'}
-              size="sm"
-              onClick={() => setSize(s)}
-              className="flex-1"
-            >
-              {s}x
-            </Button>
-          ))}
-        </div>
-      </div>
-    </aside>
-  );
+                {/* Current Color Display */}
+                <div className="flex gap-2 mb-3">
+                    <button
+                        type="button"
+                        className="h-12 flex-1 rounded border-2 border-border cursor-pointer"
+                        style={{ backgroundColor: color }}
+                        onClick={() => {
+                            const input = document.createElement("input");
+                            input.type = "color";
+                            input.value = color;
+                            input.onchange = (e) => setColor(e.target.value);
+                            input.click();
+                        }}
+                        title="Click to change color"
+                    />
+                    <div className="flex flex-col justify-center">
+                        <span className="text-xs font-mono text-muted-foreground">{color.toUpperCase()}</span>
+                    </div>
+                </div>
+
+                {/* Palette Grid */}
+                <div className="grid grid-cols-6 gap-1.5 mb-3">
+                    {palette.map((c) => (
+                        <button
+                            key={c}
+                            type="button"
+                            className={`aspect-square w-full rounded border-2 ${
+                                color === c
+                                    ? "border-foreground ring-2 ring-foreground ring-offset-2 ring-offset-background"
+                                    : "border-border"
+                            } transition-all hover:scale-105`}
+                            style={{ backgroundColor: c }}
+                            onClick={() => setColor(c)}
+                            aria-label={`Select color ${c}`}
+                            aria-pressed={color === c}
+                        />
+                    ))}
+                </div>
+
+                {/* Clear Palette Button */}
+                <Popover open={clearPaletteOpen} onOpenChange={setClearPaletteOpen}>
+                    <PopoverTrigger asChild>
+                        <Button variant="outline" size="sm" className="w-full gap-2 mb-2">
+                            <Trash2 className="h-3.5 w-3.5" />
+                            <span>Clear Palette</span>
+                        </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-80" side="right" align="start">
+                        <div className="grid gap-4">
+                            <div className="space-y-2">
+                                <h4 className="font-medium leading-none">Clear Palette?</h4>
+                                <p className="text-sm text-muted-foreground">
+                                    This will reset the palette to a single black color. This cannot be undone.
+                                </p>
+                            </div>
+                            <div className="flex gap-2 justify-end">
+                                <Button variant="outline" size="sm" onClick={() => setClearPaletteOpen(false)}>
+                                    Cancel
+                                </Button>
+                                <Button size="sm" variant="destructive" onClick={handleClearPalette}>
+                                    Clear Palette
+                                </Button>
+                            </div>
+                        </div>
+                    </PopoverContent>
+                </Popover>
+
+                {/* Preset Palettes */}
+                <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                        <Button variant="outline" className="w-full justify-start gap-2 mb-2">
+                            <PaletteIcon className="h-4 w-4" />
+                            <span className="truncate">Load Preset Colors</span>
+                        </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent className="w-64">
+                        <DropdownMenuLabel>Color Presets</DropdownMenuLabel>
+                        <DropdownMenuSeparator />
+                        {presets.map((name) => (
+                            <DropdownMenuItem key={name} onClick={() => onLoadPalette(name)}>
+                                {name}
+                            </DropdownMenuItem>
+                        ))}
+                        {savedPalettes.length > 0 && (
+                            <>
+                                <DropdownMenuSeparator />
+                                <DropdownMenuLabel>Your Saved Palettes</DropdownMenuLabel>
+                                {savedPalettes.map((name) => (
+                                    <DropdownMenuItem
+                                        key={name}
+                                        onClick={() => onLoadPalette(name)}
+                                        className="justify-between"
+                                    >
+                                        <span>{name}</span>
+                                    </DropdownMenuItem>
+                                ))}
+                            </>
+                        )}
+                    </DropdownMenuContent>
+                </DropdownMenu>
+
+                {/* Palette Management */}
+                <div className="flex gap-1">
+                    <SavePalettePopover
+                        onSave={onSavePalette}
+                        currentName={currentPaletteName}
+                        savedPalettes={savedPalettes}
+                    >
+                        <Button variant="outline" size="sm" className="flex-1 gap-1.5">
+                            <Save className="h-3.5 w-3.5" />
+                            <span>Save</span>
+                        </Button>
+                    </SavePalettePopover>
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        className="flex-1 gap-1.5"
+                        onClick={() => fileInputRef.current?.click()}
+                    >
+                        <Upload className="h-3.5 w-3.5" />
+                        <span>Import</span>
+                    </Button>
+                    <Button variant="outline" size="sm" className="flex-1 gap-1.5" onClick={onExportPalette}>
+                        <Download className="h-3.5 w-3.5" />
+                        <span>Export</span>
+                    </Button>
+                    <input
+                        type="file"
+                        ref={fileInputRef}
+                        className="hidden"
+                        accept=".json"
+                        aria-label="Import palette JSON file"
+                        onChange={(e) => {
+                            if (e.target.files?.[0]) onImportPalette(e.target.files[0]);
+                            e.target.value = null;
+                        }}
+                    />
+                </div>
+            </section>
+        </aside>
+    );
 }
