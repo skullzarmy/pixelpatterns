@@ -10,6 +10,7 @@ import Preview from "@/components/preview";
 import ExportModal from "@/components/export-modal";
 import SaveDialog from "@/components/save-dialog";
 import PromoPopup from "@/components/promo-popup";
+import PenrosePopup from "@/components/penrose-popup";
 import { SupportDialog } from "@/components/support-dialog";
 
 import { ThemeToggle } from "@/components/theme-toggle";
@@ -385,7 +386,9 @@ export default function Home() {
             <header className="h-16 border-b border-border flex items-center justify-between px-5 bg-card">
                 <div className="flex items-center gap-3">
                     <Image src="/icon0.svg" alt="PixelPatterns" width={24} height={24} />
-                    <h1 className="text-lg font-semibold tracking-tight">PixelPatterns</h1>
+                    <h1 className="text-2xl font-semibold tracking-tight font-(family-name:--font-pixelify)">
+                        PixelPatterns
+                    </h1>
                 </div>
                 <div className="flex items-center gap-2">
                     <Button variant="outline" onClick={() => loadFileInputRef.current?.click()} className="gap-2">
@@ -532,6 +535,7 @@ export default function Home() {
             <SupportDialog isOpen={isSupportDialogOpen} onClose={() => setIsSupportDialogOpen(false)} />
 
             <PromoPopup />
+            <PenrosePopup />
         </div>
     );
 }
