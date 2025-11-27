@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
-import { Download, Trash2, FolderOpen, Save, Undo, Redo } from "lucide-react";
+import { Download, Trash2, FolderOpen, Save, Undo, Redo, Menu, Settings2, Palette } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Toolbar from "@/components/toolbar";
 import PixelEditor from "@/components/pixel-editor";
@@ -12,6 +12,17 @@ import SaveDialog from "@/components/save-dialog";
 import PromoPopup from "@/components/promo-popup";
 import PenrosePopup from "@/components/penrose-popup";
 import { SupportDialog } from "@/components/support-dialog";
+import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 import { ThemeToggle } from "@/components/theme-toggle";
 
@@ -168,6 +179,9 @@ export default function Home() {
     const [savedPalettes, setSavedPalettes] = useState({});
     const [currentPaletteName, setCurrentPaletteName] = useState("Custom Palette");
 
+    // Mobile specific state
+    const [activeTab, setActiveTab] = useState("editor"); // 'editor' | 'preview'
+
     // Load saved palettes after mount to avoid hydration issues
     useEffect(() => {
         try {
@@ -184,6 +198,7 @@ export default function Home() {
     const [isExportModalOpen, setIsExportModalOpen] = useState(false);
     const [isSaveDialogOpen, setIsSaveDialogOpen] = useState(false);
     const [isSupportDialogOpen, setIsSupportDialogOpen] = useState(false);
+    const [isClearDialogOpen, setIsClearDialogOpen] = useState(false);
 
     const pixelEditorRef = useRef(null);
     const loadFileInputRef = useRef(null);
@@ -205,10 +220,16 @@ export default function Home() {
                     setTool("fill");
                     break;
                 case "1":
+                    setBrushSize(1);
+                    break;
                 case "2":
+                    setBrushSize(2);
+                    break;
                 case "3":
+                    setBrushSize(3);
+                    break;
                 case "4":
-                    setBrushSize(parseInt(e.key));
+                    setBrushSize(4);
                     break;
             }
         };
@@ -304,6 +325,7 @@ export default function Home() {
     const handleClearCanvas = () => {
         if (pixelEditorRef.current) {
             pixelEditorRef.current.clear();
+            setIsClearDialogOpen(false);
         }
     };
 
@@ -381,117 +403,215 @@ export default function Home() {
     const currentYear = new Date().getFullYear();
     const yearDisplay = currentYear > 2025 ? `2025-${currentYear}` : "2025";
 
+    const toolbarProps = {
+        tool,
+        setTool,
+        color,
+        setColor,
+        size,
+        setSize,
+        brushSize,
+        setBrushSize,
+        palette,
+        setPalette,
+        currentPaletteName,
+        presets: Object.keys(PALETTE_PRESETS),
+        savedPalettes: Object.keys(savedPalettes),
+        onLoadPalette: handleLoadPalette,
+        onSavePalette: handleSavePalette,
+        onImportPalette: handleImportPalette,
+        onExportPalette: handleExportPalette,
+    };
+
     return (
-        <div className="flex flex-col h-screen bg-background text-foreground">
-            <header className="h-16 border-b border-border flex items-center justify-between px-5 bg-card">
+        <div className="flex flex-col h-screen bg-background text-foreground overflow-hidden">
+            <header className="h-14 md:h-16 border-b border-border flex items-center justify-between px-3 md:px-5 bg-card shrink-0 z-10">
                 <div className="flex items-center gap-3">
-                    <Image src="/icon0.svg" alt="PixelPatterns" width={24} height={24} />
-                    <h1 className="text-2xl font-semibold tracking-tight font-(family-name:--font-pixelify)">
+                    {/* Mobile Menu Trigger */}
+                    <div className="md:hidden">
+                        <Sheet>
+                            <SheetTrigger asChild>
+                                <Button variant="ghost" size="icon" aria-label="Menu" className="-ml-2">
+                                    <Menu className="h-5 w-5" />
+                                </Button>
+                            </SheetTrigger>
+                            <SheetContent side="left">
+                                <SheetTitle>Menu</SheetTitle>
+                                <div className="flex flex-col gap-4 mt-6">
+                                    <Button variant="outline" onClick={() => loadFileInputRef.current?.click()} className="justify-start gap-2 w-full">
+                                        <FolderOpen className="h-4 w-4" />
+                                        <span>Load Project</span>
+                                    </Button>
+                                    <Button variant="outline" onClick={() => setIsSaveDialogOpen(true)} className="justify-start gap-2 w-full">
+                                        <Save className="h-4 w-4" />
+                                        <span>Save Project</span>
+                                    </Button>
+                                    <Button onClick={() => setIsExportModalOpen(true)} className="justify-start gap-2 w-full">
+                                        <Download className="h-4 w-4" />
+                                        <span>Export Pattern</span>
+                                    </Button>
+                                </div>
+                            </SheetContent>
+                        </Sheet>
+                    </div>
+
+                    <Image src="/icon0.svg" alt="PixelPatterns" width={24} height={24} className="w-6 h-6 md:w-8 md:h-8" />
+                    <h1 className="text-lg md:text-2xl font-semibold tracking-tight font-(family-name:--font-pixelify)">
                         PixelPatterns
                     </h1>
                 </div>
                 <div className="flex items-center gap-2">
-                    <Button variant="outline" onClick={() => loadFileInputRef.current?.click()} className="gap-2">
-                        <FolderOpen className="h-4 w-4" />
-                        <span>Load</span>
-                    </Button>
-                    <Button variant="outline" onClick={() => setIsSaveDialogOpen(true)} className="gap-2">
-                        <Save className="h-4 w-4" />
-                        <span>Save</span>
-                    </Button>
-                    <input
-                        type="file"
-                        ref={loadFileInputRef}
-                        className="hidden"
-                        accept=".fafo,.json"
-                        aria-label="Load project file input"
-                        onChange={(e) => {
-                            if (e.target.files?.[0]) handleLoadProject(e.target.files[0]);
-                            e.target.value = null;
-                        }}
-                    />
-                    <ThemeToggle />
-                    <div aria-hidden="true" className="w-px h-6 bg-border mx-2"></div>
-                    <Button onClick={() => setIsExportModalOpen(true)} className="gap-2" aria-label="Export pattern">
-                        <Download className="h-4 w-4" aria-hidden="true" />
-                        <span>Export</span>
-                    </Button>
+                    {/* Desktop Actions */}
+                    <div className="hidden md:flex items-center gap-2">
+                        <Button variant="outline" onClick={() => loadFileInputRef.current?.click()} className="gap-2">
+                            <FolderOpen className="h-4 w-4" />
+                            <span>Load</span>
+                        </Button>
+                        <Button variant="outline" onClick={() => setIsSaveDialogOpen(true)} className="gap-2">
+                            <Save className="h-4 w-4" />
+                            <span>Save</span>
+                        </Button>
+                        <input
+                            type="file"
+                            ref={loadFileInputRef}
+                            className="hidden"
+                            accept=".fafo,.json"
+                            aria-label="Load project file input"
+                            onChange={(e) => {
+                                if (e.target.files?.[0]) handleLoadProject(e.target.files[0]);
+                                e.target.value = null;
+                            }}
+                        />
+                        <ThemeToggle />
+                        <div aria-hidden="true" className="w-px h-6 bg-border mx-2"></div>
+                        <Button onClick={() => setIsExportModalOpen(true)} className="gap-2" aria-label="Export pattern">
+                            <Download className="h-4 w-4" aria-hidden="true" />
+                            <span>Export</span>
+                        </Button>
+                    </div>
+
+                    {/* Mobile Actions */}
+                    <div className="flex md:hidden items-center gap-1">
+                        <ThemeToggle />
+                    </div>
                 </div>
             </header>
 
-            <main aria-label="Pixel editor workspace" className="flex-1 flex overflow-hidden">
-                <Toolbar
-                    tool={tool}
-                    setTool={setTool}
-                    color={color}
-                    setColor={setColor}
-                    size={size}
-                    setSize={setSize}
-                    brushSize={brushSize}
-                    setBrushSize={setBrushSize}
-                    palette={palette}
-                    setPalette={setPalette}
-                    currentPaletteName={currentPaletteName}
-                    presets={Object.keys(PALETTE_PRESETS)}
-                    savedPalettes={Object.keys(savedPalettes)}
-                    onLoadPalette={handleLoadPalette}
-                    onSavePalette={handleSavePalette}
-                    onImportPalette={handleImportPalette}
-                    onExportPalette={handleExportPalette}
-                />
+            {/* Mobile Tab Navigation */}
+            <div className="md:hidden flex border-b border-border bg-card shrink-0">
+                <button
+                    onClick={() => setActiveTab("editor")}
+                    className={`flex-1 py-3 text-sm font-medium border-b-2 transition-colors ${
+                        activeTab === "editor"
+                            ? "border-primary text-primary"
+                            : "border-transparent text-muted-foreground hover:text-foreground"
+                    }`}
+                >
+                    Editor
+                </button>
+                <button
+                    onClick={() => setActiveTab("preview")}
+                    className={`flex-1 py-3 text-sm font-medium border-b-2 transition-colors ${
+                        activeTab === "preview"
+                            ? "border-primary text-primary"
+                            : "border-transparent text-muted-foreground hover:text-foreground"
+                    }`}
+                >
+                    Preview
+                </button>
+            </div>
 
+            <main aria-label="Pixel editor workspace" className="flex-1 flex flex-col md:flex-row overflow-hidden relative">
+                {/* Desktop Sidebar */}
+                <div className="hidden md:block h-full w-72 shrink-0 border-r border-border">
+                    <Toolbar {...toolbarProps} className="h-full w-full border-none" />
+                </div>
+
+                {/* Editor Section */}
                 <section
                     aria-label="Canvas editor"
-                    className="flex-1 bg-background flex flex-col items-center justify-center border-r border-border"
+                    className={`flex-1 bg-background flex flex-col items-center justify-center relative overflow-hidden ${
+                        activeTab === "editor" ? "flex" : "hidden md:flex"
+                    }`}
                 >
-                    <div className="mb-3 flex gap-2" role="toolbar" aria-label="Canvas controls">
+                    <div className="absolute inset-0 flex flex-col items-center justify-center overflow-auto">
+                        <div className="mt-4 mb-3 flex gap-2 z-10" role="toolbar" aria-label="Canvas controls">
                         <Button
                             variant="outline"
                             size="sm"
                             onClick={handleUndo}
-                            aria-label="Undo last action (Cmd+Z)"
+                            aria-label="Undo last action"
                             className="gap-2"
                         >
                             <Undo className="h-3.5 w-3.5" aria-hidden="true" />
-                            <span>Undo</span>
+                            <span className="hidden sm:inline">Undo</span>
                         </Button>
                         <Button
                             variant="outline"
                             size="sm"
                             onClick={handleRedo}
-                            aria-label="Redo last undone action (Cmd+Shift+Z)"
+                            aria-label="Redo last undone action"
                             className="gap-2"
                         >
                             <Redo className="h-3.5 w-3.5" aria-hidden="true" />
-                            <span>Redo</span>
+                            <span className="hidden sm:inline">Redo</span>
                         </Button>
                         <Button
                             variant="destructive"
                             size="sm"
-                            onClick={handleClearCanvas}
+                            onClick={() => setIsClearDialogOpen(true)}
                             aria-label="Clear entire canvas"
                             className="gap-2"
                         >
                             <Trash2 className="h-3.5 w-3.5" aria-hidden="true" />
-                            <span>Clear Canvas</span>
+                            <span className="hidden sm:inline">Clear</span>
                         </Button>
+                        </div>
+                        
+                        <div className="w-full flex items-center justify-center p-4">
+                            <div className="max-w-full max-h-full aspect-square shadow-lg">
+                                <PixelEditor
+                                    ref={pixelEditorRef}
+                                    size={size}
+                                    color={color}
+                                    tool={tool}
+                                    brushSize={brushSize}
+                                    onUpdate={setImageData}
+                                />
+                            </div>
+                        </div>
                     </div>
-                    <PixelEditor
-                        ref={pixelEditorRef}
-                        size={size}
-                        color={color}
-                        tool={tool}
-                        brushSize={brushSize}
-                        onUpdate={setImageData}
-                    />
+
+                    {/* Mobile Toolbar FAB - Fixed bottom right */}
+                    <div className="md:hidden fixed bottom-6 right-6 z-20">
+                        <Sheet>
+                            <SheetTrigger asChild>
+                                <Button size="icon" variant="default" className="shadow-lg h-14 w-14 rounded-full">
+                                    <Palette className="h-6 w-6" />
+                                </Button>
+                            </SheetTrigger>
+                            <SheetContent side="bottom" className="h-[80vh] p-0">
+                                <SheetTitle className="sr-only">Drawing Tools</SheetTitle>
+                                <Toolbar {...toolbarProps} className="h-full w-full border-none" />
+                            </SheetContent>
+                        </Sheet>
+                    </div>
                 </section>
 
-                <section aria-label="Pattern preview" className="flex-1 bg-muted/30 flex items-center justify-center">
-                    <Preview imageData={imageData} mode="grid" />
+                {/* Preview Section */}
+                <section 
+                    aria-label="Pattern preview" 
+                    className={`flex-1 bg-muted/30 flex items-center justify-center overflow-hidden ${
+                        activeTab === "preview" ? "flex" : "hidden md:flex"
+                    }`}
+                >
+                    <div className="w-full h-full p-4 flex items-center justify-center">
+                        <Preview imageData={imageData} mode="grid" />
+                    </div>
                 </section>
             </main>
 
-            <footer className="h-10 border-t border-border flex items-center justify-between px-5 bg-card text-xs text-muted-foreground">
+            <footer className="h-10 border-t border-border flex items-center justify-between px-5 bg-card text-xs text-muted-foreground shrink-0 hidden md:flex">
                 <p>
                     © {yearDisplay} PixelPatterns. All rights reserved. a{" "}
                     <a
@@ -533,6 +653,23 @@ export default function Home() {
             />
 
             <SupportDialog isOpen={isSupportDialogOpen} onClose={() => setIsSupportDialogOpen(false)} />
+
+            <AlertDialog open={isClearDialogOpen} onOpenChange={setIsClearDialogOpen}>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>Clear Canvas?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                            This will clear all pixels from the canvas. This action cannot be undone.
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction onClick={handleClearCanvas} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+                            Clear Canvas
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
 
             <PromoPopup />
             <PenrosePopup />

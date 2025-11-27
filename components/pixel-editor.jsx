@@ -224,6 +224,30 @@ const PixelEditor = forwardRef(({ size, color, tool, brushSize = 1, onUpdate }, 
         saveToHistory(pixels);
     };
 
+    // Touch event handlers
+    const handleTouchStart = (e) => {
+        e.preventDefault(); // Prevent scrolling
+        const touch = e.touches[0];
+        setIsDrawing(true);
+        const { row, col } = getPixelIndex(touch);
+        paint(row, col);
+    };
+
+    const handleTouchMove = (e) => {
+        e.preventDefault(); // Prevent scrolling
+        if (!isDrawing) return;
+        if (tool === "fill") return;
+        const touch = e.touches[0];
+        const { row, col } = getPixelIndex(touch);
+        paint(row, col);
+    };
+
+    const handleTouchEnd = (e) => {
+        e.preventDefault();
+        setIsDrawing(false);
+        saveToHistory(pixels);
+    };
+
     const cursorClass = tool === "pen" ? "cursor-crosshair" : tool === "eraser" ? "cursor-cell" : "cursor-copy";
 
     return (
@@ -232,8 +256,8 @@ const PixelEditor = forwardRef(({ size, color, tool, brushSize = 1, onUpdate }, 
             width={600}
             height={600}
             role="img"
-            aria-label={`Pixel art canvas, ${size} by ${size} pixels. Use mouse to draw. Current tool: ${tool}, current color: ${color}`}
-            className={`max-w-[600px] max-h-[600px] ${cursorClass}`}
+            aria-label={`Pixel art canvas, ${size} by ${size} pixels. Use mouse or touch to draw. Current tool: ${tool}, current color: ${color}`}
+            className={`max-w-[600px] max-h-[600px] ${cursorClass} touch-none`}
             style={{
                 width: "100%",
                 height: "100%",
@@ -243,6 +267,10 @@ const PixelEditor = forwardRef(({ size, color, tool, brushSize = 1, onUpdate }, 
             onMouseMove={handleMouseMove}
             onMouseUp={handleMouseUp}
             onMouseLeave={handleMouseUp}
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
+            onTouchCancel={handleTouchEnd}
             tabIndex={0}
         />
     );

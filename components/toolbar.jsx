@@ -45,6 +45,7 @@ export default function Toolbar({
     onSavePalette,
     onImportPalette,
     onExportPalette,
+    className = "",
 }) {
     const [customSize, setCustomSize] = useState(size);
     const [clearPaletteOpen, setClearPaletteOpen] = useState(false);
@@ -87,7 +88,7 @@ export default function Toolbar({
     return (
         <aside
             aria-label="Drawing tools and options"
-            className="w-72 bg-card border-r border-border flex flex-col gap-5 p-6 overflow-y-auto"
+            className={`bg-card border-r border-border flex flex-col gap-5 p-6 overflow-y-auto ${className}`}
         >
             {/* Tools */}
             <section>
@@ -277,57 +278,10 @@ export default function Toolbar({
                     </div>
                 </div>
 
-                {/* Palette Grid */}
-                <div className="grid grid-cols-6 gap-1.5 mb-3">
-                    {palette.map((c) => (
-                        <button
-                            key={c}
-                            type="button"
-                            className={`aspect-square w-full rounded border-2 ${
-                                color === c
-                                    ? "border-foreground ring-2 ring-foreground ring-offset-2 ring-offset-background"
-                                    : "border-border"
-                            } transition-all hover:scale-105`}
-                            style={{ backgroundColor: c }}
-                            onClick={() => setColor(c)}
-                            aria-label={`Select color ${c}`}
-                            aria-pressed={color === c}
-                        />
-                    ))}
-                </div>
-
-                {/* Clear Palette Button */}
-                <Popover open={clearPaletteOpen} onOpenChange={setClearPaletteOpen}>
-                    <PopoverTrigger asChild>
-                        <Button variant="outline" size="sm" className="w-full gap-2 mb-2">
-                            <Trash2 className="h-3.5 w-3.5" />
-                            <span>Clear Palette</span>
-                        </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-80" side="right" align="start">
-                        <div className="grid gap-4">
-                            <div className="space-y-2">
-                                <h4 className="font-medium leading-none">Clear Palette?</h4>
-                                <p className="text-sm text-muted-foreground">
-                                    This will reset the palette to a single black color. This cannot be undone.
-                                </p>
-                            </div>
-                            <div className="flex gap-2 justify-end">
-                                <Button variant="outline" size="sm" onClick={() => setClearPaletteOpen(false)}>
-                                    Cancel
-                                </Button>
-                                <Button size="sm" variant="destructive" onClick={handleClearPalette}>
-                                    Clear Palette
-                                </Button>
-                            </div>
-                        </div>
-                    </PopoverContent>
-                </Popover>
-
-                {/* Preset Palettes */}
+                {/* Load Preset Palettes */}
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                        <Button variant="outline" className="w-full justify-start gap-2 mb-2">
+                        <Button variant="outline" className="w-full justify-center gap-2 mb-3">
                             <PaletteIcon className="h-4 w-4" />
                             <span className="truncate">Load Preset Colors</span>
                         </Button>
@@ -358,18 +312,39 @@ export default function Toolbar({
                     </DropdownMenuContent>
                 </DropdownMenu>
 
-                {/* Palette Management */}
-                <div className="flex gap-1">
-                    <SavePalettePopover
-                        onSave={onSavePalette}
-                        currentName={currentPaletteName}
-                        savedPalettes={savedPalettes}
-                    >
-                        <Button variant="outline" size="sm" className="flex-1 gap-1.5">
-                            <Save className="h-3.5 w-3.5" />
-                            <span>Save</span>
-                        </Button>
-                    </SavePalettePopover>
+                {/* Palette Grid */}
+                <div className="grid grid-cols-6 gap-1.5 mb-3">
+                    {palette.map((c) => (
+                        <button
+                            key={c}
+                            type="button"
+                            className={`aspect-square w-full rounded border-2 ${
+                                color === c
+                                    ? "border-foreground ring-2 ring-foreground ring-offset-2 ring-offset-background"
+                                    : "border-border"
+                            } transition-all hover:scale-105`}
+                            style={{ backgroundColor: c }}
+                            onClick={() => setColor(c)}
+                            aria-label={`Select color ${c}`}
+                            aria-pressed={color === c}
+                        />
+                    ))}
+                </div>
+
+                {/* Save Palette */}
+                <SavePalettePopover
+                    onSave={onSavePalette}
+                    currentName={currentPaletteName}
+                    savedPalettes={savedPalettes}
+                >
+                    <Button variant="outline" size="sm" className="w-full gap-2 mb-2">
+                        <Save className="h-3.5 w-3.5" />
+                        <span>Save Palette</span>
+                    </Button>
+                </SavePalettePopover>
+
+                {/* Import/Export */}
+                <div className="flex gap-2 mb-2">
                     <Button
                         variant="outline"
                         size="sm"
@@ -395,6 +370,34 @@ export default function Toolbar({
                         }}
                     />
                 </div>
+
+                {/* Clear Palette Button */}
+                <Popover open={clearPaletteOpen} onOpenChange={setClearPaletteOpen}>
+                    <PopoverTrigger asChild>
+                        <Button variant="outline" size="sm" className="w-full gap-2">
+                            <Trash2 className="h-3.5 w-3.5" />
+                            <span>Clear Palette</span>
+                        </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-80" side="right" align="start">
+                        <div className="grid gap-4">
+                            <div className="space-y-2">
+                                <h4 className="font-medium leading-none">Clear Palette?</h4>
+                                <p className="text-sm text-muted-foreground">
+                                    This will reset the palette to a single black color. This cannot be undone.
+                                </p>
+                            </div>
+                            <div className="flex gap-2 justify-end">
+                                <Button variant="outline" size="sm" onClick={() => setClearPaletteOpen(false)}>
+                                    Cancel
+                                </Button>
+                                <Button size="sm" variant="destructive" onClick={handleClearPalette}>
+                                    Clear Palette
+                                </Button>
+                            </div>
+                        </div>
+                    </PopoverContent>
+                </Popover>
             </section>
         </aside>
     );
